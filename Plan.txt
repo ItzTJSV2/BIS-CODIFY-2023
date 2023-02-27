@@ -1,0 +1,34 @@
+Columns:
+For Booleans: (0 = False, 1 = True)
+    ItemID       Integer
+    ItemName     String
+    Location     String
+    DirecImage   String
+    SecurityLvL  Boolean
+    DateFound    Date
+    Found        Boolean
+    Tags         String
+    FreeToAll    Boolean
+
+
+Tags: 1 = Black, 2 = White, ....
+    Black
+    White
+    Red
+    Green
+    Blue
+    Pink
+    Brown
+    Yellow
+    Orange
+    Purple
+
+Example of SQL Statements:
+cursor.execute("SELECT * FROM Items WHERE Tags LIKE '%-3-%';")
+for response in cursor.fetchall():
+    print(response)
+cursor.execute("UPDATE Items SET Found = 1 WHERE ItemID = 2")
+for response in cursor.fetchall():
+    print(response)
+
+    
