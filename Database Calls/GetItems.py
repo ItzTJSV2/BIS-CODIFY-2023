@@ -1,9 +1,11 @@
 import sqlite3
     
-# Accepts in integer form
-def FlipItemFound(ID):
+def Start():
     conn = sqlite3.connect('Database.db')
     cursor = conn.cursor()
+# Accepts in integer form
+def FlipItemFound(ID):
+    Start()
     cursor.execute(f"SELECT * FROM Items WHERE ItemID = {ID};")
     for item in cursor.fetchall():
         if item[6] == 0:
@@ -16,8 +18,7 @@ def FlipItemFound(ID):
     
 # Accepts in integer form
 def ItemIsNowFree(ID):
-    conn = sqlite3.connect('Database.db')
-    cursor = conn.cursor()
+    Start()
     cursor.execute(f"SELECT * FROM Items WHERE ItemID = {ID};")
     for item in cursor.fetchall():
         cursor.execute(f"UPDATE Items SET FreeToAll = 1 WHERE ItemID = {ID};")
@@ -27,21 +28,18 @@ def ItemIsNowFree(ID):
     
 # Accepts in integer form
 def ItemWithTags(Tag):
-    conn = sqlite3.connect('Database.db')
-    cursor = conn.cursor()
+    Start()
     cursor.execute(f"SELECT * FROM Items WHERE Tags LIKE '%-{Tag}-%';")
     return (cursor.fetchall())
 
 # Returns 2d List [[Item1], [Item2]]
 def GetAllItems():
-    conn = sqlite3.connect('Database.db')
-    cursor = conn.cursor()
+    Start()
     cursor.execute("SELECT * FROM Items")
     return (cursor.fetchall())
 
 # Accepts 0 or 1 (false or true)
 def ItemsWithSecurity(Level):
-    conn = sqlite3.connect('Database.db')
-    cursor = conn.cursor()
+    Start()
     cursor.execute(f"SELECT * FROM Items WHERE Security = '{Level}';")
     return (cursor.fetchall())
