@@ -1,4 +1,5 @@
 import sqlite3
+from addnSearch import *
     
 def Start():
     conn = sqlite3.connect('Database.db')
@@ -43,4 +44,10 @@ def GetAllItems():
 def ItemsWithSecurity(Level):
     conn, cursor = Start()
     cursor.execute(f"SELECT * FROM Items WHERE Security = '{Level}';")
+    return (cursor.fetchall())
+
+# Accepts 0 or 1 (false or true)
+def ItemsWithFound(Found):
+    conn, cursor = Start()
+    cursor.execute(f"SELECT * FROM Items WHERE Found = '{Found}';")
     return (cursor.fetchall())
