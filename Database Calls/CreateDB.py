@@ -11,7 +11,7 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS Items (
     Location TEXT NOT NULL,
     DirecImage TEXT NOT NULL,
     DateFound DATE NOT NULL,
-    Tags TEXT NOT NULL,
+    Tags TEXT,
     Found INTEGER DEFAULT 0,
     Security INTEGER DEFAULT 0,
     FreeToAll INTEGER DEFAULT 0
