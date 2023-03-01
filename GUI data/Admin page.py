@@ -3,7 +3,8 @@ import PySimpleGUI as sg
 sg.theme("DarkAmber")
 
 #define layout
-options=[[sg.Frame('Choose your type of object',[[sg.Radio('Whole Wheat','rd_bread', key ='Whole Wheat'),
+options=[[sg.Text('Name', size =(15, 1)), sg.InputText()],
+        [sg.Frame('Choose your type of object',[[sg.Radio('Whole Wheat','rd_bread', key ='Whole Wheat'),
                                          sg.Radio('Multigrain','rd_bread', key='Multigrain'),
                                      sg.Radio('Normal','rd_bread', key='Normal'),
                                          sg.Radio('Stuffed','rd_bread', key='Stuffed'),
@@ -12,23 +13,29 @@ options=[[sg.Frame('Choose your type of object',[[sg.Radio('Whole Wheat','rd_bre
                                            sg.Checkbox('Mushroom',key='Mushroom'),
                                          sg.Checkbox('Corn',key='Corn'),
                                            sg.Checkbox('Cherry Tomatoes',key='Cherry Tomatoes'),
-                                           sg.Checkbox('Olives',key='Olives')]], title_location='ne', background_color='white' )],
+                                           sg.Checkbox('Olives',key='Olives')]], title_location='ne' )],
         [sg.Frame('Choose your tags', [[sg.Checkbox('Onion',key='Onion Sauce'),
                                           sg.Checkbox('Paprika',key='Paprika'),
                                      sg.Checkbox('Schezwan',key='Schezwan'),
                                           sg.Checkbox('Tandoori',key='Tandoori')]],title_color='yellow', border_width=3)],
          [sg.Button('Submit', font=('Times New Roman',12))]]
-choices = [[sg.Frame('Customise Your Pizza', layout= options)]]
+
+choices = [[sg.Frame('Which tags do you want to put?', layout= options)]]
         
 items_chosen = [[sg.Text('You have Chosen')],
+                [sg.Image('download.png')],
+                [sg.Text("", key= '-Name-')],
                 [sg.Text("", size=(50,3),key='options')]]
 
               
 # Create layout with two columns using precreated frames
 layout = [[sg.Column(choices, element_justification='c'), sg.Column(items_chosen, element_justification='c')]]
 
+
+
 #Define Window
 window =sg.Window("Column and Frame",layout)
+
 #Read  values entered by user
 event,values=window.read()
 #access all the values and if selected add them to a string
