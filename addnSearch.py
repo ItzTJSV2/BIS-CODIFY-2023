@@ -8,7 +8,7 @@ def Start():
 
 
 # Adds item to the database
-def AddItem(name: str, location: int, imageAdr: str, date: str, tags: list, security: str):
+def AddItem(name: str, location: str, imageAdr: str, date: str, tags: list, security: str):
     cursor, conn = Start()
 
     # Manipulate tags list into the form of "-n1-n2-n3-..." where n represents the id of tag
@@ -17,40 +17,51 @@ def AddItem(name: str, location: int, imageAdr: str, date: str, tags: list, secu
         tagStr += str(i) + "-"
 
     # Add item to the database
-    cmd = "INSERT INTO Items (ItemName, Location, DirecImage, DateFound, Tags, Security)"
-    val = "VALUES ({}, {}, {}, {}, {}, {})".format(
-        name, location, imageAdr, date, tagStr, security)
-    cursor.execute(cmd, val)
+    data = f"{name}, {location}, {imageAdr}, {date}, {tagStr}, {str(security)}"
+    print(data)
+    cursor.execute(f"INSERT INTO Items (ItemName, Location, DirecImage, DateFound, Tags, Security) VALUES ('{data});")
     conn.commit()
     conn.close()
 
 
 # Returns 2d List [[Item1], [Item2], ...]
-def SearchItem(location: int, date: str, tags: list):
+def SearchItem(location: int, types:list, properties: list):
     cursor, conn = Start()
 
-    # Manipulate tags list into the form of ['-n1-', '-n2-;, ...] where n represents the id of tag
-    tags = ["-" + str(tag) + "-" for tag in tags]
+    # Type is the tag that has highest priority -- When searching, the item MUST include one of the types given
+    cmd = "SELECT * FROM Items WHERE Found = 0 "
+    if types != []:
+        # Search any item that contains more than one of the tags
+        condition = " OR ".join([f"Type = {tag}" for tag in types])
+        cmd += f"AND ({condition}) "
 
-    # Search any item that contains more than one of the tags
-    option = [f"tags LIKE '%{tag}%'" for tag in tags]
-    cursor.execute("SELECT * FROM Items WHERE " + " OR ".join(option))
+    if properties != []:
+        # Manipulate tags list into the form of ['-n1-', '-n2-;, ...] where n represents the id of tag
+        properties = [f"-{tag}-" for tag in properties]
+
+        # Search any item that contains more than one of the tags
+        condition = " OR ".join([f"Property LIKE '%{tag}%'" for tag in properties])
+        cmd += f"AND ({condition}) "
+
+    # location == 0 represents Location isn't given
+    elif location:
+        condition = "Location = " + str(location)
+        cmd += f"AND {condition}"
+
+    cmd += "BY ItemID DESC LIMIT 50"
+    print(cmd)
     data = [item + [0] for item in cursor.fetchall()]
 
     # Assign importance value to each item
     maxImportance = 0
     for item in data:
-        # tag - importance: +3
-        for tag in tags:
+        # tag - importance: +2
+        for tag in properties:
             if item[5].__contains__(tag):
-                item[-1] += 3
+                item[-1] += 2
 
-        # Location - importance: +2
+        # Location - importance: +1
         if item[2] == location:
-            item[-1] += 2
-
-        # Date - importance: +1
-        if item[4] > date:
             item[-1] += 1
 
         # Get highest score for running counting sort
@@ -79,7 +90,7 @@ def CountingSort(w: int, data: list):
     for item in data:
         val = w - item[-1]
         index = counter[val]
-        result[index] = item[0:-1]
+        result[index] = item[:-1]
         counter[val] -= 1
 
     return result

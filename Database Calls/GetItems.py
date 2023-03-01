@@ -5,15 +5,14 @@ def Start():
     conn = sqlite3.connect('Database.db')
     cursor = conn.cursor()
     return conn, cursor
-# Accepts in integer form
+
+
+# ID is in integer form
 def FlipItemFound(ID):
-    conn, cursor = Start()
+    cursor, conn = Start()
     cursor.execute(f"SELECT * FROM Items WHERE ItemID = {ID};")
-    for item in cursor.fetchall():
-        if item[6] == 0:
-            cursor.execute(f"UPDATE Items SET Found = 1 WHERE ItemID = {ID};")
-        elif item[6] == 1:
-            cursor.execute(f"UPDATE Items SET Found = 0 WHERE ItemID = {ID};")
+    item = cursor.fetchall()
+    cursor.execute(f"UPDATE Items SET Found = {item[0][6] ^ 1} WHERE ItemID = {ID};")
     conn.commit()
     conn.close()
     
