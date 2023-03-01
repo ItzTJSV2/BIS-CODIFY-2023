@@ -25,7 +25,7 @@ def addItem(name: str, location: str, imageAdr: str, date: str, tags: list, secu
 
 
 # Returns 2d List [[Item1], [Item2], ...]
-def searchItem(location: int, types:list, properties: list):
+def searchItem(types:list, properties: list, location: int):
     cursor, conn = start()
 
     # Type is the tag that has highest priority -- When searching, the item MUST include one of the types given
