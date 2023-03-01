@@ -1,15 +1,15 @@
 import sqlite3
 
 
-def Start():
+def start():
     conn = sqlite3.connect("Database.db")
     cursor = conn.cursor()
     return cursor, conn
 
 
 # Adds item to the database
-def AddItem(name: str, location: str, imageAdr: str, date: str, tags: list, security: str):
-    cursor, conn = Start()
+def addItem(name: str, location: str, imageAdr: str, date: str, tags: list, security: str):
+    cursor, conn = start()
 
     # Manipulate tags list into the form of "-n1-n2-n3-..." where n represents the id of tag
     tagStr = "-"
@@ -25,8 +25,8 @@ def AddItem(name: str, location: str, imageAdr: str, date: str, tags: list, secu
 
 
 # Returns 2d List [[Item1], [Item2], ...]
-def SearchItem(location: int, types:list, properties: list):
-    cursor, conn = Start()
+def searchItem(location: int, types:list, properties: list):
+    cursor, conn = start()
 
     # Type is the tag that has highest priority -- When searching, the item MUST include one of the types given
     cmd = "SELECT * FROM Items WHERE Found = 0 "
@@ -69,11 +69,11 @@ def SearchItem(location: int, types:list, properties: list):
             maxImportance = item[-1]
 
     # Sort the searched data into the order of importance
-    search = CountingSort(maxImportance, data)
+    search = countingSort(maxImportance, data)
     return search
 
 
-def CountingSort(w: int, data: list):
+def countingSort(w: int, data: list):
     # Count number of items in the specific importance level
     counter = [0] * w + [0]
     for item in data:
