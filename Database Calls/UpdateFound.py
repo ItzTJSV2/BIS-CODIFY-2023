@@ -9,7 +9,7 @@ current_time = datetime.today()
 
 for item in GetAllItems():
     time_diff = datetime.today() - datetime.strptime(item[4], "%Y-%m-%d")
-    if (time_diff >= 10):
+    if (time_diff >= 20):
         ItemIsNowFree(item[0])
 
 
