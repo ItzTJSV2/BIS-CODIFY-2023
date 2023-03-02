@@ -19,7 +19,8 @@ def addItem(name: str, location: str, imageAdr: str, date: str, tags: list, secu
     # Add item to the database
     data = f"{name}, {location}, {imageAdr}, {date}, {tagStr}, {str(security)}"
     print(data)
-    cursor.execute(f"INSERT INTO Items (ItemName, Location, DirecImage, DateFound, Tags, Security) VALUES ('{data});")
+    # cursor.execute(f"INSERT INTO Items (ItemName, Location, DirecImage, DateFound, Tags, Security) VALUES ('{data});")
+    cursor.execute(f"INSERT INTO Items (ItemName, Location, DirecImage, DateFound, Tags, Security) VALUES ('{name}', '{location}', '{imageAdr}', '{date}', '{tagStr}', '{str(security)}');")
     conn.commit()
     conn.close()
 

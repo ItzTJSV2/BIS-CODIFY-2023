@@ -14,6 +14,7 @@ TagDict = {}  # This will store all the tags' values
 
 def UploadImage():
     global img
+    global filedir
     cur_dir = os.getcwd()
     cur_dir += "\Images"
     filedir = filedialog.askopenfilename(title="Select Image")
@@ -47,10 +48,10 @@ def Submit():
         return
             
     if clicked.get() == "":
-        SecurityLabel['bg'] = "f00"
+        SecurityLabel['bg'] = "#f00"
         return
     else:
-        SecurityLabel['bg'] = "f0f0f0"
+        SecurityLabel['bg'] = "#f0f0f0"
         
     TagArray = []
     for i in range(len(TagDict)):
@@ -61,7 +62,8 @@ def Submit():
     # Tags are optional
     # Security will default to Low
     # Rest have defaults of False
-    addItem(ItemNameEntry.get(), LocationEntry.get(), UploadButton['text'], str(CalendarEntry.get_date()), TagArray, clicked.get())
+    addItem(ItemNameEntry.get(), LocationEntry.get(), f"Images\{os.path.basename(filedir)}", str(CalendarEntry.get_date()), TagArray, clicked.get())
+    Reset()
     
 def Reset():
     print("Reset UI")
@@ -74,6 +76,7 @@ def Reset():
     for i in range(len(TagDict)):
         TagDict[i].set(0)
     UploadButton['text']= "Open Image"
+    SecurityLabel['bg'] = "#f0f0f0"
     
     
 gui = Tk()
