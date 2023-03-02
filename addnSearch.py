@@ -8,19 +8,19 @@ def start():
 
 
 # Adds item to the database
-def addItem(name: str, location: str, imageAdr: str, date: str, tags: list, security: str):
+def addItem(name: str, location: str, imageAdr: str, date: str, colour: list, type: str,security: str):
     cursor, conn = start()
 
     # Manipulate tags list into the form of "-n1-n2-n3-..." where n represents the id of tag
     tagStr = "-"
-    for i in tags:
+    for i in colour:
         tagStr += str(i) + "-"
 
     # Add item to the database
     data = f"{name}, {location}, {imageAdr}, {date}, {tagStr}, {str(security)}"
     print(data)
     # cursor.execute(f"INSERT INTO Items (ItemName, Location, DirecImage, DateFound, Tags, Security) VALUES ('{data});")
-    cursor.execute(f"INSERT INTO Items (ItemName, Location, DirecImage, DateFound, Tags, Security) VALUES ('{name}', '{location}', '{imageAdr}', '{date}', '{tagStr}', '{str(security)}');")
+    cursor.execute(f"INSERT INTO Items (ItemName, Location, DirecImage, DateFound, Colour, Type, Security) VALUES ('{name}', '{location}', '{imageAdr}', '{date}', '{tagStr}', '{type}', '{str(security)}');")
     conn.commit()
     conn.close()
 
