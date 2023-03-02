@@ -11,8 +11,7 @@ for item in GetAllItems():
     time_diff = datetime.today() - datetime.strptime(item[4], "%Y-%m-%d")
     if (time_diff >= 20):
         ItemIsNowFree(item[0])
-
-
+        
 
 conn.commit()
 conn.close()
