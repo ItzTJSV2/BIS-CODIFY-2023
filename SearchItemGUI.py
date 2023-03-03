@@ -68,28 +68,43 @@ class MainFrame(ttk.Frame):
         self.df = CollapsingFrame(self)
         self.sf = CollapsingFrame(self)
 
+        self.openSearch = ttk.Frame(self)
+        self.enter = ttk.Frame(self)
         tglBtn = ttk.Button(
-            master=self,
+            master=self.openSearch,
             text="test",
-            command=lambda c=(self.sf, self.df): self.toggleTab(c[0], c[1])
+            command=lambda c=(self.sf, self.df, self.openSearch,
+                              self.enter): self.toggleTab(c[0], c[1], c[2], c[3])
         )
         tglBtn.grid(row=0, column=0, sticky='ew')
-        self.sf.grid(row=1, column=0, sticky='news')
-
-        self.cumulativeRow += 2
-        # self.add(self.sf, self.df)
+        tglBtn = ttk.Button(
+            master=self.enter,
+            text="test",
+            command=lambda c=(self.sf, self.df, self.openSearch,
+                              self.enter): self.toggleTab(c[0], c[1], c[2], c[3])
+        )
+        tglBtn.grid(row=0, column=0, sticky='ew')
+        self.openSearch.grid(row=0, column=0, sticky='news')
+        self.enter.grid(row=1, column=0, sticky='news')
+        self.sf.grid(row=2, column=0, sticky='news')
+        self.df.grid(row=3, column=0, sticky='news')
 
         # search
         self.search()
-
         self.display([], [], [])
+        self.enter.grid_remove()
+        self.sf.grid_remove()
 
-    def toggleTab(self, sf, df):
+    def toggleTab(self, sf, df, opensearch, enter):
         if sf.winfo_viewable():
             sf.grid_remove()
+            enter.grid_remove()
+            opensearch.grid()
             df.grid()
         else:
+            opensearch.grid_remove()
             df.grid_remove()
+            enter.grid()
             sf.grid()
 
     def search(self):
