@@ -100,7 +100,7 @@ class MainFrame(ttk.Frame):
 
     def search(self):
         self.sf = CollapsingFrame(self)
-        self.grid(row=0, column=0)
+        self.add(self.sf)
 
         self.sf.separator()
 
@@ -154,7 +154,7 @@ class MainFrame(ttk.Frame):
 
     def display(self, types: list, colours: list, locations: list):
         self.df = CollapsingFrame(self)
-        self.grid(row=1, column=0)
+        self.add(self.df)
         """
         Table format
             ItemID INTEGER PRIMARY KEY,
