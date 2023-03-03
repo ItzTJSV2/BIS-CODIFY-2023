@@ -1,17 +1,15 @@
-import sqlite3
-from GetItems import *
+from Database_Calls.GetItems import ItemsWithSecurity, ItemIsNowFree
 from datetime import datetime
 
-conn = sqlite3.connect('Database.db')
-cursor = conn.cursor()
+def CheckTime():
+    current_time = datetime.today()
+    for item in ItemsWithSecurity("Low"):
+        time_diff = datetime.today() - datetime.strptime(item[4], "%Y-%m-%d")
+        if (time_diff.days >= 20):
+            print(f"Item ID: {item[0]}")
+            ItemIsNowFree(item[0])
+            print("Updated Item.")
 
-current_time = datetime.today()
 
-for item in GetAllItems():
-    time_diff = datetime.today() - datetime.strptime(item[4], "%Y-%m-%d")
-    if (time_diff >= 20):
-        ItemIsNowFree(item[0])
         
 
-conn.commit()
-conn.close()
