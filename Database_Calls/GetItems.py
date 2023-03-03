@@ -12,7 +12,7 @@ def FlipItemFound(ID):
     cursor, conn = Start()
     cursor.execute(f"SELECT * FROM Items WHERE ItemID = {ID};")
     item = cursor.fetchall()
-    cursor.execute(f"UPDATE Items SET Found = {item[0][6] ^ 1} WHERE ItemID = {ID};")
+    cursor.execute(f"UPDATE Items SET Found = {item[0][9] ^ 1} WHERE ItemID = {ID};")
     conn.commit()
     conn.close()
     
