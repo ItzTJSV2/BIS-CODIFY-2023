@@ -65,43 +65,34 @@ class MainFrame(ttk.Frame):
         self.clrsChosen = []
         self.locsChosen = []
 
+        self.df = CollapsingFrame(self)
+        self.sf = CollapsingFrame(self)
+
+        tglBtn = ttk.Button(
+            master=self,
+            text="test",
+            command=lambda c=(self.sf, self.df): self.toggleTab(c[0], c[1])
+        )
+        tglBtn.grid(row=0, column=0, sticky='ew')
+        self.sf.grid(row=1, column=0, sticky='news')
+
+        self.cumulativeRow += 2
+        # self.add(self.sf, self.df)
+
         # search
         self.search()
 
         self.display([], [], [])
 
-        # Navigation
-        # nav = ttk.Frame(master=sf)
-
-    def add(self, child, title="hello"):
-        tab = ttk.Frame(self)
-        tab.grid(row=self.cumulativeRow, column=0, sticky='ew')
-
-        title = ttk.Label(master=tab, text=title)
-        title.pack(side=LEFT, fill=BOTH, padx=20)
-
-        tglBtn = ttk.Button(
-            master=tab,
-            text="test",
-            command=lambda c=child: self.toggleTab(c)
-        )
-        tglBtn.pack(side='left')
-
-        child.tglBtn = tglBtn
-        child.grid(row=self.cumulativeRow + 1, column=0, sticky='news')
-
-        self.cumulativeRow += 2
-
-    def toggleTab(self, child):
-        if child.winfo_viewable():
-            child.grid_remove()
+    def toggleTab(self, sf, df):
+        if sf.winfo_viewable():
+            sf.grid_remove()
+            df.grid()
         else:
-            child.grid()
+            df.grid_remove()
+            sf.grid()
 
     def search(self):
-        self.sf = CollapsingFrame(self)
-        self.add(self.sf)
-
         self.sf.separator()
 
         # search - Type
@@ -153,8 +144,6 @@ class MainFrame(ttk.Frame):
         self.sf.separator()
 
     def display(self, types: list, colours: list, locations: list):
-        self.df = CollapsingFrame(self)
-        self.add(self.df)
         """
         Table format
             ItemID INTEGER PRIMARY KEY,
