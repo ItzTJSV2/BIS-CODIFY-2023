@@ -1,6 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
-from ttkbootstrap.constants import *
+import ttkbootstrap as ttk
 from addnsearch import *
 
 
@@ -9,8 +8,22 @@ class Application(tk.Tk):
         super().__init__()
         self.title('Lost and Found')
         self.style = ttk.Style()
-        self.geometry("600x750")
+        self.geometry("700x800")
         self.resizable(False, False)
+
+        # self.s = ttk.Style()
+        # self.s.configure(
+        #     'TCheckbutton',
+        #     background='white',
+        #     font=('Helvetica', 12, 'bold')
+        # )
+        # self.s.map('TCheckbutton',
+        #            foreground=[('disabled', 'yellow'),
+        #                        ('pressed', 'red'),
+        #                        ('active', 'blue')],
+        #            background=[('disabled', 'magenta'),
+        #                        ('pressed', 'cyan'),
+        #                        ('active', 'green')])
 
         mf = MainFrame(self)
         mf.pack(fill="both")
@@ -76,18 +89,18 @@ class MainFrame(ttk.Frame):
             command=lambda c=(self.sf, self.df, self.openSearch,
                               self.enter): self.toggleTab(c[0], c[1], c[2], c[3])
         )
-        tglBtn.grid(row=0, column=0, sticky='ew')
+        tglBtn.grid(row=0, column=0)
         tglBtn = ttk.Button(
             master=self.enter,
             text="test",
             command=lambda c=(self.sf, self.df, self.openSearch,
                               self.enter): self.toggleTab(c[0], c[1], c[2], c[3])
         )
-        tglBtn.grid(row=0, column=0, sticky='ew')
-        self.openSearch.grid(row=0, column=0, sticky='news')
-        self.enter.grid(row=1, column=0, sticky='news')
-        self.sf.grid(row=2, column=0, sticky='news')
-        self.df.grid(row=3, column=0, sticky='news')
+        tglBtn.grid(row=0, column=0)
+        self.openSearch.grid(row=0, column=0)
+        self.enter.grid(row=1, column=0)
+        self.sf.grid(row=2, column=0)
+        self.df.grid(row=3, column=0)
 
         # search
         self.search()
@@ -108,6 +121,7 @@ class MainFrame(ttk.Frame):
             sf.grid()
 
     def search(self):
+
         self.sf.separator()
 
         # search - Type
@@ -116,28 +130,32 @@ class MainFrame(ttk.Frame):
             self.typsChosen.append(tk.BooleanVar(value=False))
             option = ttk.Checkbutton(
                 master=typTag,
-                bootstyle="toolbutton",
                 cursor="hand",
+                bootstyle='success-round-toggle',
                 text=name,
                 variable=self.typsChosen[i]
             )
-            option.grid(column=i % 5, row=i // 5)
+            option.grid(column=i % 4, row=i // 4, sticky='w')
         self.sf.add(typTag, title="Types")
 
         self.sf.separator()
 
         # search - Colour
-        clrTag = ttk.Frame(self.sf, padding=10)
+        clrTag = ttk.Labelframe(self.sf, padding=10, text='Colours')
         for i, name in enumerate(self.clrs, 0):
             self.clrsChosen.append(tk.BooleanVar(value=False))
+            frm = ttk.Frame(master=clrTag, width=150,
+                            height=25)
+            frm.grid(column=i % 4, row=i // 4, padx=0, pady=3)
+            frm.pack_propagate(0)
             option = ttk.Checkbutton(
-                master=clrTag,
-                bootstyle="toolbutton",
+                master=frm,
                 cursor="hand",
+                bootstyle='success-round-toggle',
                 text=name,
                 variable=self.clrsChosen[i]
             )
-            option.grid(column=i % 5, row=i // 5)
+            option.pack(side='left')
         self.sf.add(clrTag, title="Colours")
 
         self.sf.separator()
@@ -148,12 +166,12 @@ class MainFrame(ttk.Frame):
             self.locsChosen.append(tk.BooleanVar(value=False))
             option = ttk.Checkbutton(
                 master=locTag,
-                bootstyle="toolbutton",
                 cursor="hand",
+                bootstyle='success-round-toggle',
                 text=name,
                 variable=self.locsChosen[i]
             )
-            option.grid(column=i % 5, row=i // 5)
+            option.grid(column=i % 4, row=i // 4, sticky='w')
         self.sf.add(locTag, title="Locations")
 
         self.sf.separator()
@@ -218,7 +236,7 @@ class CollapsingFrame(ttk.Frame):
         tab.grid(row=self.cumulativeRow, column=0, sticky='ew')
 
         title = ttk.Label(master=tab, text=title)
-        title.pack(side=LEFT, fill=BOTH, padx=20)
+        title.pack(side='left', fill='both', padx=20)
 
         tglBtn = ttk.Button(
             master=tab,
@@ -234,8 +252,7 @@ class CollapsingFrame(ttk.Frame):
 
     def separator(self):
         sep = ttk.Separator(
-            master=self,
-            bootstyle="primary"
+            master=self
         )
         sep.grid(row=self.cumulativeRow, column=0, sticky='ew', pady=5)
 
@@ -248,5 +265,9 @@ class CollapsingFrame(ttk.Frame):
             child.grid()
 
 
+# Ash gray B2BEB5
+# Dark gray A9A9A9
+# Navy 202A44
+# Green 5AC692
 if __name__ == '__main__':
     Application().mainloop()
