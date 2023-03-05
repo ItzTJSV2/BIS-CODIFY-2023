@@ -49,7 +49,7 @@ def searchItem(types:list, properties: list, location: int):
         condition = "Location = " + str(location)
         cmd += f"AND {condition}"
 
-    cmd += "BY ItemID DESC LIMIT 50"
+    cmd += "BY ItemID DESC LIMIT 4"
     print(cmd)
     data = [item + [0] for item in cursor.fetchall()]
 
