@@ -1,9 +1,13 @@
+# Construct GUI
 import tkinter as tk
 import ttkbootstrap as ttk
-from addnsearch import *
+
+# Fetch image
 from PIL import Image
 import customtkinter
-import tkinter.font as font
+
+# fetch data from database
+from addnsearch import *
 
 
 class Application(tk.Tk):
@@ -14,22 +18,8 @@ class Application(tk.Tk):
         self.geometry("700x800")
         self.resizable(False, False)
 
-        # self.s = ttk.Style()
-        # self.s.configure(
-        #     'TCheckbutton',
-        #     background='white',
-        #     font=('Helvetica', 12, 'bold')
-        # )
-        # self.s.map('TCheckbutton',
-        #            foreground=[('disabled', 'yellow'),
-        #                        ('pressed', 'red'),
-        #                        ('active', 'blue')],
-        #            background=[('disabled', 'magenta'),
-        #                        ('pressed', 'cyan'),
-        #                        ('active', 'green')])
-
         mf = MainFrame(self)
-        mf.pack(fill="both", pady=30)
+        mf.pack(fill="both", pady=40)
 
 
 class MainFrame(ttk.Frame):
@@ -77,17 +67,21 @@ class MainFrame(ttk.Frame):
             "Boy's changing room"
         ]
 
+        # Controls different options chosen from the 'search' tab
         self.typsChosen = []
         self.clrsChosen = []
         self.locsChosen = []
+        self.typsPassed = []
+        self.clrsPassed = []
+        self.locsPassed = []
 
         self.displayNav = ttk.Frame(self)
         self.searchNav = ttk.Frame(self)
         self.sf = ttk.Frame(self, padding=20)
         self.df = ttk.Frame(self, padding=20)
 
-        self.displayNav.grid(row=0, column=0, pady=10, sticky='w')
-        self.searchNav.grid(row=1, column=0, pady=10, sticky='w')
+        self.displayNav.grid(row=0, column=0, sticky='w')
+        self.searchNav.grid(row=1, column=0, sticky='w')
         self.sf.grid(row=2, column=0)
         self.df.grid(row=3, column=0)
 
@@ -97,19 +91,8 @@ class MainFrame(ttk.Frame):
         self.display([], [], [])
         self.toggleTab()
 
-    def toggleTab(self):
-        if self.df.winfo_viewable():
-            self.displayNav.grid_remove()
-            self.df.grid_remove()
-            self.searchNav.grid()
-            self.sf.grid()
-        else:
-            self.sf.grid_remove()
-            self.searchNav.grid_remove()
-            self.displayNav.grid()
-            self.df.grid()
-
     def displayNavigation(self, frame):
+        # Construct a button that opens 'search' tab, closing 'display' tab
         tglBtn = ttk.Button(
             master=frame,
             text="🔎 SEARCH",
@@ -119,91 +102,78 @@ class MainFrame(ttk.Frame):
         tglBtn.grid(row=0, column=0, padx=20, sticky='w')
 
     def searchNavigation(self, frame):
+        # Construct a button that refreshes the 'display' tab using 'chosen tags' + open it
         tglBtn = ttk.Button(
             master=frame,
             text="ENTER ⮐",
             bootstyle='dark-outline',
-            command=lambda: self.toggleTab()
+            command=lambda: self.refresh()
         )
         tglBtn.grid(row=0, column=0, padx=20, sticky='w')
 
+        # Construct a button that restores the 'chosen tag' valye to before moving to 'search' + open 'display' tab
+        tglBtn = ttk.Button(
+            master=frame,
+            text="CANCEL",
+            bootstyle='dark-outline',
+            command=lambda: self.cancel()
+        )
+        tglBtn.grid(row=0, column=1, padx=20, sticky='e')
+
     def search(self, frame):
-        # search - Type
-        typTag = ttk.Labelframe(frame, padding=10,
-                                text='TYPES', bootstyle='dark')
-        typTag.grid(column=0, row=0, pady=0)
-        for i, name in enumerate(self.typs, 0):
-            self.typsChosen.append(tk.BooleanVar(value=False))
-            frm = ttk.Frame(master=typTag, width=150, height=25)
-            frm.grid(column=i % 4, row=i // 4, padx=0, pady=3)
-            frm.pack_propagate(0)
-            option = ttk.Checkbutton(
-                master=frm,
-                cursor="hand",
-                bootstyle='success-round-toggle',
-                text=name,
-                variable=self.typsChosen[i]
-            )
-            option.pack(side='left')
+        containerInfo = [
+            (0, "TYPES", self.typs, self.typsChosen),
+            (1, "COLOURS", self.clrs, self.clrsChosen),
+            (2, "LOCATIONS", self.locs, self.locsChosen),
+        ]
 
-        # search - Colour
-        clrTag = ttk.Labelframe(frame, padding=10,
-                                text='COLOURS', bootstyle='dark')
-        clrTag.grid(column=0, row=1, pady=20)
-        for i, name in enumerate(self.clrs, 0):
-            self.clrsChosen.append(tk.BooleanVar(value=False))
-            frm = ttk.Frame(master=clrTag, width=150, height=25)
-            frm.grid(column=i % 4, row=i // 4, padx=0, pady=3)
-            frm.pack_propagate(0)
-            option = ttk.Checkbutton(
-                master=frm,
-                cursor="hand",
-                bootstyle='success-round-toggle',
-                text=name,
-                variable=self.clrsChosen[i]
-            )
-            option.pack(side='left')
+        # Iterate, construct three containers with checkboxes in it
+        for info in containerInfo:
+            container = ttk.Labelframe(frame, padding=10, text=info[1], bootstyle='dark')
+            container.grid(column=0, row=info[0], pady=10)
+            for i, name in enumerate(info[2], 0):
+                # Set up the 'Chosen tag' list. (Can't be done at line 71-76 because 'tk.BooleanVar's must all have different id)
+                info[3].append(tk.BooleanVar(value=False))
 
-        # search - Location
-        locTag = ttk.Labelframe(frame, padding=10,
-                                text='LOCATIONS', bootstyle='dark')
-        locTag.grid(column=0, row=2, pady=0)
-        for i, name in enumerate(self.locs, 0):
-            self.locsChosen.append(tk.BooleanVar(value=False))
-            frm = ttk.Frame(master=locTag, width=150, height=25)
-            frm.grid(column=i % 4, row=i // 4, padx=0, pady=3)
-            frm.pack_propagate(0)
-            option = ttk.Checkbutton(
-                master=frm,
-                cursor="hand",
-                bootstyle='success-round-toggle',
-                text=name,
-                variable=self.locsChosen[i]
-            )
-            option.pack(side='left')
+                # Construct a frame to fix width & height of checkbutton
+                frm = ttk.Frame(master=container, width=150, height=25)
+                frm.grid(column=i % 4, row=i // 4, padx=0, pady=3)
+                frm.pack_propagate(0)
+
+                # Construct the checkbutton
+                option = ttk.Checkbutton(
+                    master=frm,
+                    cursor="hand",
+                    bootstyle='success-round-toggle',
+                    text=name,
+                    variable=info[3][i]
+                )
+                option.pack(side='left')
 
     def display(self, types: list, colours: list, locations: list):
         """
         Table format
             ItemID INTEGER PRIMARY KEY,
             ItemName TEXT NOT NULL,
-            Location TEXT NOT NULL,
+            Location INTEGER NOT NULL,
             DirecImage TEXT NOT NULL,
             DateFound DATE NOT NULL,
-            Colour INTEGER NOT NULL,
+            Colour TEXT NOT NULL,
             Type INTEGER NOT NULL,
             Found INTEGER DEFAULT 0,
             Security INTEGER DEFAULT 0,
             FreeToAll INTEGER DEFAULT 0
         """
-        self.example = [
-            [17, 'bottle', 0, 'apple.png', '2023-03-01', '-2-3-', 0, 0, 0, 0],
-            [19, 'bag', 3, 'image.png', '2023-02-27', '-0-4-', 1, 0, 0, 0]
-        ]
-        # Format: [[item1], [item2]]
-        # items = searchItem(types, colours, locations)
-        items = self.example
 
+        # Format: [[item1], [item2]]
+        items = searchItem(types, colours, locations)
+
+        # Clear the existing data --> Prevent the old data from remaining in the tab after refresh (In case new data is shorter)
+        for i in range(4):
+            clear = ttk.Label(self.df)
+            clear.grid(row=i, column=0)
+
+        # Iterate, Construct containers with detail of each item in it
         for i, item in enumerate(items, 0):
             itemProfile = ttk.Labelframe(
                 self.df, padding=10, text=i + 1, bootstyle='dark')
@@ -227,68 +197,82 @@ class MainFrame(ttk.Frame):
             )
             title.grid(row=0, column=1, columnspan=3, padx=7, pady=0)
 
-            # Location tag
-            type = ttk.Label(
-                master=itemProfile,
-                text=self.getTags(self.typs, item[5][1:-1], 2),
-                bootstyle='secondary',
-                font=('Noto sans', 12, 'italic')
-            )
-            type.grid(row=1, column=1, padx=0, pady=0, sticky='w')
+            if len(item[5]) >= 7:
+                item[5] = item[5][:7]
+            # 0: Types, 1: Colours, 2: Locations
+            tagsInfo = [
+                (1, self.getTags(self.typs, str(item[6]))),
+                (2, self.getTags(self.clrs, item[5][1:-1])),
+                (3, self.getTags(self.locs, str(item[2])))
+            ]
 
-            colour = ttk.Label(
-                master=itemProfile,
-                text=self.getTags(self.clrs, str(item[6])),
-                bootstyle='secondary',
-                font=('Noto sans', 12, 'italic')
-            )
-            colour.grid(row=1, column=2, padx=0, pady=0)
+            # Iterate, construct labels that has detail of the item
+            for info in tagsInfo:
+                tag = ttk.Label(
+                    master=itemProfile,
+                    text=info[1],
+                    bootstyle='secondary',
+                    font=('Noto sans', 12, 'italic')
+                )
+                tag.grid(row=1, column=info[0], padx=0, pady=0, sticky='w')
 
-            location = ttk.Label(
-                master=itemProfile,
-                text=self.getTags(self.locs, str(item[2])),
-                bootstyle='secondary',
-                font=('Noto sans', 12, 'italic')
-            )
-            location.grid(row=1, column=3, padx=0, pady=0)
-
-    def getTags(self, source, index: str, num=1):
+    def getTags(self, source, index: str):
+        # Reform str(id) --> str(name): "-7-5-" --> "# Black  # Yellow"
         tags = ""
         index = index.split("-")
-        for i in range(num):
-            tags += "# " + source[int(index[i])] + "  "
+        for i in index:
+            tags += "# " + source[int(i)] + "  "
         return tags
 
-
-class CollapsingFrame(ttk.Frame):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.cumulativeRow = 0
-
-    def add(self, child, title=""):
-        tab = ttk.Frame(self)
-        tab.grid(row=self.cumulativeRow, column=0)
-
-        title = ttk.Label(master=tab, text=title)
-        title.pack(side='left', fill='both', padx=20)
-
-        tglBtn = ttk.Button(
-            master=tab,
-            text="test",
-            command=lambda c=child: self.toggleTab(c)
-        )
-        tglBtn.pack(side='left')
-
-        child.tglBtn = tglBtn
-        child.grid(row=self.cumulativeRow + 1, column=0)
-
-        self.cumulativeRow += 2
-
-    def toggleTab(self, child):
-        if child.winfo_viewable():
-            child.grid_remove()
+    def toggleTab(self):
+        # Switch between 'search' tab and 'display' tab
+        if self.df.winfo_viewable():
+            self.displayNav.grid_remove()
+            self.df.grid_remove()
+            self.searchNav.grid()
+            self.sf.grid()
         else:
-            child.grid()
+            self.sf.grid_remove()
+            self.searchNav.grid_remove()
+            self.displayNav.grid()
+            self.df.grid()
+
+    def refresh(self):
+        updates = [
+            [self.typsPassed, self.typsChosen],
+            [self.clrsPassed, self.clrsChosen],
+            [self.locsPassed, self.locsChosen]
+        ]
+
+        # Iterate, update 'chosen tag -- passed' list
+        for [target, criteria] in updates:
+            for i in range(len(criteria)):
+                if criteria[i].get() == True:
+                    target.append(i)
+        
+        # Update 'display' tab by writing over the existing frame
+        self.display(self.typsPassed, self.clrsPassed, self.locsPassed)
+
+        # Switch the display
+        self.toggleTab()
+
+    def cancel(self):
+        updates = [
+            [self.typsChosen, self.typsPassed],
+            [self.clrsChosen, self.clrsPassed],
+            [self.locsChosen, self.locsPassed]
+        ]
+
+        # Iterate, restore the 'chosen tag' list of previous search (In case user doesn't like the change that he made)
+        for [target, criteria] in updates:
+            for i in range(len(target)):
+                if i in criteria:
+                    target[i].set(True)
+                else:
+                    target[i].set(False)
+
+        # Switch the display
+        self.toggleTab()
 
 
 if __name__ == '__main__':
