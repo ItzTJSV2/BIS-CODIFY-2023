@@ -7,7 +7,7 @@ from PIL import Image
 import customtkinter
 
 # fetch data from database
-from addnsearch import *
+from addnSearch import *
 
 
 class Application(tk.Tk):
@@ -143,14 +143,13 @@ class MainFrame(ttk.Frame):
                 # Construct the checkbutton
                 option = ttk.Checkbutton(
                     master=frm,
-                    cursor="hand",
                     bootstyle='success-round-toggle',
                     text=name,
                     variable=info[3][i]
                 )
                 option.pack(side='left')
 
-    def display(self, types: list, colours: list, locations: list):
+    def display(self, types: list, colours: list, locations: list, code=0):
         """
         Table format
             ItemID INTEGER PRIMARY KEY,
@@ -167,11 +166,17 @@ class MainFrame(ttk.Frame):
 
         # Format: [[item1], [item2]]
         items = searchItem(types, colours, locations)
+        """
+        # Sample data
+        items = [[1, 'bottle1', 3, 'images/apple.jpg', '2023-02-28', '-2-4-7-8-', 2, 0, 0, 0],
+                 [2, 'bottle1', 1, 'images/apple.jpg', '2023-02-28', '-0-1-', 4, 0, 0, 0],
+                 [3, 'bottle1', 4, 'images/apple.jpg', '2023-02-28', '-3-5-6-', 1, 0, 0, 0],]
+        
+        if code == 1:
+            items = [[1, 'dfa', 3, 'images/apple.jpg', '2023-02-28', '-2-4-7-8-', 2, 0, 0, 0],
+                    [2, 'ghgh', 1, 'images/apple.jpg', '2023-02-28', '-3-2-', 1, 0, 0, 0],]
+        """
 
-        # Clear the existing data --> Prevent the old data from remaining in the tab after refresh (In case new data is shorter)
-        for i in range(4):
-            clear = ttk.Label(self.df)
-            clear.grid(row=i, column=0)
 
         # Iterate, Construct containers with detail of each item in it
         for i, item in enumerate(items, 0):
@@ -251,7 +256,7 @@ class MainFrame(ttk.Frame):
                     target.append(i)
         
         # Update 'display' tab by writing over the existing frame
-        self.display(self.typsPassed, self.clrsPassed, self.locsPassed)
+        self.display(self.typsPassed, self.clrsPassed, self.locsPassed, 1)
 
         # Switch the display
         self.toggleTab()

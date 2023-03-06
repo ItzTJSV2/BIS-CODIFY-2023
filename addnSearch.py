@@ -1,9 +1,11 @@
 import sqlite3
+from Database_Calls.UpdateFound import CheckTime
 
 
 def start():
     conn = sqlite3.connect("Database.db")
     cursor = conn.cursor()
+    CheckTime()
     return cursor, conn
 
 
