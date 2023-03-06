@@ -84,7 +84,6 @@ def SubmitDate(Date):
     DateSelection.set(Date)
     DateInput.configure(text= DateSelection.get())
     CloseWindow()
-    
 def OpenWindow():
     global ChildWindow
     if ChildWindow is None or not ChildWindow.winfo_exists():
@@ -199,7 +198,7 @@ for i in range(len(Types)):
     else:
         DisplayString = Types[i]
     
-    CheckBox2 = customtkinter.CTkRadioButton(TypeSelectionFrame, text=DisplayString, radiobutton_width=400, radiobutton_height=50, font=global_font, variable=TypeSelection, value=Types[i])
+    CheckBox2 = customtkinter.CTkRadioButton(TypeSelectionFrame, text=DisplayString, radiobutton_width=400, radiobutton_height=50, font=global_font, variable=TypeSelection, value=i)
     CheckBox2.grid(row=i+1, column=0, sticky=N+S+W+E)
     
 #############################
